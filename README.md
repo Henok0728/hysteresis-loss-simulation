@@ -20,45 +20,117 @@ An interactive web simulation of magnetic hysteresis loss in ferromagnetic cores
 
 ## How to run it locally
 
-### Quick start (both frontend + backend at once)
+### Prerequisites
 
-You need **Node.js** and **Python 3.10+** installed.
+Before starting, ensure you have installed:
 
-**1. Clone the repo**
+- **Node.js** (v16+): [Download here](https://nodejs.org/)
+- **Python** (v3.10+): [Download here](https://www.python.org/)
+
+Verify installation:
+
+```bash
+node --version
+python --version
+```
+
+### Quick start (⚡ 3 steps, ~2 minutes)
+
+**1. Clone and enter the repo**
+
 ```bash
 git clone https://github.com/eyob2one/hysteresis-loss-simulation.git
 cd hysteresis-loss-simulation
 ```
 
-**2. Set up the Python backend virtual environment**
+**2. Set up the Python backend**
+
 ```bash
 cd backend
 python -m venv venv
 
-# Windows
+# On Windows:
 venv\Scripts\activate
 
-# macOS / Linux
+# On macOS / Linux:
 source venv/bin/activate
 
+# Install dependencies
 pip install -r requirements.txt
+
+# Go back to root
 cd ..
 ```
 
-**3. Run everything with one command**
+**3. Start both frontend + backend**
+
 ```bash
 npm run dev
 ```
 
-This starts:
-- Backend API at `http://127.0.0.1:8000`
-- Frontend simulator at `http://localhost:3000`
+This will automatically start:
 
-Open `http://localhost:3000` in your browser.
+- **Backend API** at `http://127.0.0.1:8000` (Python/FastAPI)
+- **Frontend UI** at `http://localhost:3000` (Vanilla JS + Chart.js)
 
-> If you see "Sync: Offline Fallback" in the top bar, the frontend still works — it uses its built-in JS physics engine. You only need the backend for Steinmetz ML regression.
+Open your browser to **`http://localhost:3000`** — you're ready to simulate!
+
+### 📝 What if I only want to run the frontend?
+
+The frontend works **fully offline** with a built-in JavaScript physics engine. Just open `frontend/index.html` directly in your browser or serve it:
+
+```bash
+npx serve frontend -p 3000
+```
+
+The backend is only needed for advanced features like Steinmetz ML regression. You'll see "Sync: Offline Fallback" in the top bar if the API isn't available.
+
+### Troubleshooting
+
+| Issue                       | Solution                                                      |
+| --------------------------- | ------------------------------------------------------------- |
+| `command not found: npm`    | Install Node.js from https://nodejs.org/                      |
+| `command not found: python` | Install Python 3.10+ from https://www.python.org/             |
+| Port 3000 already in use    | Kill the process or use `npx serve frontend -p 3001`          |
+| Backend connection refused  | Check if `npm run dev` started both servers (wait 5 seconds)  |
+| Module not found errors     | Run `pip install -r requirements.txt` inside `backend/` again |
 
 ---
+
+## 👨‍💻 Getting started for developers
+
+### Clone and set up your local environment
+
+```bash
+# Clone the repository
+git clone https://github.com/eyob2one/hysteresis-loss-simulation.git
+cd hysteresis-loss-simulation
+
+# Install Python dependencies (from inside backend/)
+cd backend && python -m venv venv && venv\Scripts\activate && pip install -r requirements.txt && cd ..
+
+# Run both servers
+npm run dev
+```
+
+### Available npm scripts
+
+```bash
+npm run dev              # Start both frontend (port 3000) + backend (port 8000) concurrently
+npm run start:frontend  # Start frontend only (no backend needed)
+npm run start:backend   # Start backend API only (for testing ML features)
+```
+
+### Testing your changes
+
+1. **Frontend changes**: Open `http://localhost:3000` — changes reload automatically
+2. **Backend changes**: Restart the backend server (Ctrl+C, then `npm run dev`)
+3. **Physics formulas**: Test with different materials using the dropdown menu
+4. **ML regression**: Upload a CSV file in the "Steinmetz Regression" tab
+
+---
+
+## 🎮 How to use the simulator
 
 ## How to simulate
 
@@ -72,22 +144,54 @@ Open `http://localhost:3000` in your browser.
 
 ---
 
-## Project structure
+## 📁 Project structure
 
 ```
 hysteresis-loss-simulation/
-├── frontend/
-│   └── index.html          # Everything — UI, chart, JS physics engine
-├── backend/
+├── frontend/                   # Standalone web application
+│   ├── index.html             # Main UI (no build step needed!)
+│   ├── js/
+│   │   ├── app.js             # App state & orchestration
+│   │   ├── api.js             # Backend API communication
+│   │   ├── charts.js          # Chart.js rendering
+│   │   └── mag-hyst.js        # Physics engine (offline fallback)
+│   └── css/
+│       ├── mag-hyst.css       # Main styles + dark/light theme
+│       └── styles.css         # Additional component styles
+│
+├── backend/                    # Python API (optional for advanced features)
 │   ├── app/
-│   │   ├── main.py         # FastAPI app entry point
-│   │   ├── api/routes.py   # API endpoints
-│   │   ├── utils/formulas.py  # Core physics math (Langevin, tanh loop, Bertotti loss)
-│   │   └── models/         # Steinmetz ML model (scikit-learn)
-│   └── requirements.txt
-├── package.json            # npm scripts to run both servers together
-└── generate_test_data.py   # Helper to generate sample Steinmetz training data
+│   │   ├── main.py           # FastAPI application entry point
+│   │   ├── api/
+│   │   │   └── routes.py      # REST API endpoints (/simulate, /fit-steinmetz)
+│   │   ├── models/
+│   │   │   └── hysteresis_model.py  # Scikit-learn ML model
+│   │   └── utils/
+│   │       ├── formulas.py    # Core physics: Bertotti loss, tanh loops
+│   │       └── data_parser.py # CSV parsing for Steinmetz fitting
+│   ├── data/                  # Material datasheets (CSV)
+│   │   ├── bh_materials.csv
+│   │   └── core_loss_training.csv
+│   └── requirements.txt        # Python dependencies
+│
+├── docs/                       # Developer & architecture guides
+│   ├── DEVELOPER_GUIDE.md
+│   └── CPM_ROADMAP.md
+│
+├── package.json               # npm scripts: run both servers together
+├── .gitignore                 # Git exclusions (venv, node_modules, etc.)
+└── README.md                  # This file
 ```
+
+### Key entry points for developers
+
+| File                            | Purpose                  | Edit when                            |
+| ------------------------------- | ------------------------ | ------------------------------------ |
+| `frontend/index.html`           | UI structure & layout    | Adding new tabs or controls          |
+| `frontend/js/mag-hyst.js`       | Physics simulation       | Changing loop model or loss formulas |
+| `frontend/css/mag-hyst.css`     | Styling & responsiveness | Fixing UI layout or adding features  |
+| `backend/app/utils/formulas.py` | Physics calculations     | Implementing new material models     |
+| `backend/app/api/routes.py`     | REST API                 | Adding new endpoints for analysis    |
 
 ---
 
@@ -103,6 +207,7 @@ Where `s = Hc / arctanh(Br / Bsat)` — this guarantees the curves pass exactly 
 At low Hmax the peak induction `Bpk` is scaled down proportionally, giving a physically realistic minor loop. At high Hmax it saturates and sprouts the characteristic flat ears.
 
 Losses are computed using the **Bertotti model**:
+
 ```
 P_total = P_hysteresis + P_eddy + P_excess
         = kh·f·Bpk^2 + ke·f²·Bpk^2 + kex·f^1.5·Bpk^1.5
@@ -122,12 +227,12 @@ You can't analytically solve for k, α, β from raw measurements — there's no 
 
 ### What it adds beyond basic simulation
 
-| What the ML model does | Why it matters |
-|---|---|
-| Fits k, α, β from your lab measurements | Lets you use real datasheet data instead of guessing |
-| Validates against known material datasheets | Ensures the Steinmetz model is accurate for your specific core |
+| What the ML model does                        | Why it matters                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------ |
+| Fits k, α, β from your lab measurements       | Lets you use real datasheet data instead of guessing                     |
+| Validates against known material datasheets   | Ensures the Steinmetz model is accurate for your specific core           |
 | Can predict loss at untested operating points | Interpolate/extrapolate to frequencies or flux levels you didn't measure |
-| Ridge regularisation prevents overfitting | Stays stable even with sparse or slightly noisy datasets |
+| Ridge regularisation prevents overfitting     | Stays stable even with sparse or slightly noisy datasets                 |
 
 In general, ML regression here replaces the tedious manual curve-fitting that engineers used to do graphically on log-log paper. It gives you a compact mathematical model (just 3 numbers) that accurately describes how your core loses energy across a wide range of operating conditions.
 
@@ -135,9 +240,9 @@ In general, ML regression here replaces the tedious manual curve-fitting that en
 
 ## Tech stack
 
-| Layer | Tech |
-|---|---|
-| Frontend | HTML + Vanilla JS, Chart.js, Tailwind CSS (CDN) |
-| Backend | Python, FastAPI, uvicorn |
-| ML | scikit-learn (LinearRegression with log transform) |
-| Runner | Node.js + concurrently |
+| Layer    | Tech                                               |
+| -------- | -------------------------------------------------- |
+| Frontend | HTML + Vanilla JS, Chart.js, Tailwind CSS (CDN)    |
+| Backend  | Python, FastAPI, uvicorn                           |
+| ML       | scikit-learn (LinearRegression with log transform) |
+| Runner   | Node.js + concurrently                             |

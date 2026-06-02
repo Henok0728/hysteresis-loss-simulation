@@ -153,41 +153,46 @@ def generate_hysteresis_loop(
     coercivity_h: float,
     remanence_b: float,
     n_points: int = 200,
+    frequency: float = 0.0,
 ) -> dict[str, list[float]]:
     """
-    Generates a realistic symmetric hysteresis loop with closed upper/lower branches.
-    Uses an arctanh/sigmoid formulation with dynamic minor loop scaling.
-    As h_max varies, the loop area and peak values scale dynamically.
-    """
-    h = np.linspace(-h_max, h_max, n_points)
-    
-    # Dynamic minor loop scaling
-    # 1. Peak induction scales based on peak applied field relative to coercivity
-    b_pk = b_sat * np.tanh(h_max / (coercivity_h * 1.5 + 1e-12))
-    
-    # 2. Scale effective remanence and coercivity based on peak field
-    ratio_pk_sat = b_pk / b_sat if b_sat > 0 else 0.0
-    remanence_eff = remanence_b * ratio_pk_sat
-    coercivity_eff = coercivity_h * np.tanh(h_max / (coercivity_h + 1e-12))
-    
-    # 3. Handle physical limits
-    remanence_eff = min(remanence_eff, b_pk * 0.999)
-    if remanence_eff <= 0:
-        remanence_eff = b_pk * 0.5
-        
-    ratio = min(remanence_eff / (b_pk + 1e-12), 0.999)
-    s = coercivity_eff / np.arctanh(ratio)
-    
-    if s <= 0:
-        s = coercivity_eff if coercivity_eff > 0 else 1.0
+    Generate a closed B-H hysteresis loop using the same tanh phase-lag
+    formulation used by the frontend MAG-HYST simulator.
 
-    b_upper = b_pk * np.tanh((h + coercivity_eff) / s)
-    b_lower = b_pk * np.tanh((h - coercivity_eff) / s)
+    The return keeps the legacy monotonic upper/lower branch arrays and
+    also includes chronological cycle arrays for animation clients.
+    """
+    if h_max <= 0 or b_sat <= 0 or coercivity_h <= 0:
+        raise ValueError("h_max, b_sat, and coercivity_h must be positive.")
+
+    h = np.linspace(-h_max, h_max, n_points)
+
+    safe_br = min(max(remanence_b, 1e-9), b_sat * 0.98)
+    ratio = np.clip(safe_br / b_sat, -0.9999, 0.9999)
+    a_dc = coercivity_h / max(np.arctanh(ratio), 1e-9)
+
+    dynamic_gain = 1.0 + 0.045 * np.sqrt(max(frequency, 0.0))
+    coercivity_eff = coercivity_h * dynamic_gain
+    a_eff = a_dc * dynamic_gain
+    mu_rev = (b_sat * 0.05) / max(h_max, 1e-9)
+    b_sat_ferro = b_sat * 0.95
+
+    b_upper = b_sat_ferro * np.tanh((h + coercivity_eff) / a_eff) + mu_rev * h
+    b_lower = b_sat_ferro * np.tanh((h - coercivity_eff) / a_eff) + mu_rev * h
+
+    theta = np.linspace(0.0, 2.0 * np.pi, max(80, n_points * 2) + 1)
+    h_cycle = h_max * np.sin(theta)
+    delay = coercivity_eff * np.cos(theta)
+    b_cycle = b_sat_ferro * np.tanh((h_cycle - delay) / a_eff) + mu_rev * h_cycle
 
     return {
         "h": h.tolist(),
         "b_upper": b_upper.tolist(),
         "b_lower": b_lower.tolist(),
+        "cycle_h": h_cycle.tolist(),
+        "cycle_b": b_cycle.tolist(),
+        "dynamic_coercivity_h": float(coercivity_eff),
+        "frequency_hz": float(frequency),
     }
 
 def calculate_loop_area(h: list[float], b_upper: list[float], b_lower: list[float]) -> float:

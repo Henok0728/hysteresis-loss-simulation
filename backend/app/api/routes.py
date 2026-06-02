@@ -54,6 +54,7 @@ class HysteresisLoopRequest(BaseModel):
     coercivity_h: float = Field(..., gt=0)
     remanence_b:  float = Field(..., gt=0)
     n_points:     int   = Field(200, ge=20, le=2000)
+    frequency:    float = Field(0.0, ge=0)
 
 
 class FitDataPoint(BaseModel):
@@ -84,41 +85,155 @@ async def health_check() -> dict:
 async def get_presets() -> dict:
     """Get the physical presets of different materials for classroom simulation."""
     return {
-        "soft_ferrite": {
-            "name": "Soft Ferrite (3C90 - HF Transformer)",
-            "b_sat": 0.40,
-            "coercivity_h": 15.0,
-            "remanence_b": 0.25,
-            "k": 0.0012,
-            "alpha": 1.6,
-            "beta": 2.4,
-            "k_h": 0.0008,
-            "k_e": 2e-7,
-            "k_ex": 5e-6
-        },
-        "silicon_steel": {
-            "name": "Silicon Steel (M4 - Power Transformer)",
+        "silicon_steel_m4": {
+            "name": "Electrical Silicon Steel (M4)",
+            "description": "Transformer and motor lamination steel with low coercivity.",
             "b_sat": 1.80,
-            "coercivity_h": 50.0,
-            "remanence_b": 1.20,
+            "coercivity_h": 40.0,
+            "remanence_b": 1.35,
+            "h_max": 800.0,
+            "core_volume_cm3": 500.0,
             "k": 0.015,
+            "k_h": 0.012,
             "alpha": 1.7,
             "beta": 2.0,
-            "k_h": 0.012,
             "k_e": 1.5e-5,
             "k_ex": 8e-5
         },
-        "hard_magnetic": {
-            "name": "Hard Magnetic (Alnico V - Permanent Magnet)",
-            "b_sat": 1.35,
-            "coercivity_h": 40000.0,
+        "soft_pure_iron": {
+            "name": "Soft Pure Iron",
+            "description": "High saturation soft magnet for electromagnets and shielding.",
+            "b_sat": 2.15,
+            "coercivity_h": 80.0,
+            "remanence_b": 1.15,
+            "h_max": 1200.0,
+            "core_volume_cm3": 250.0,
+            "k": 0.025,
+            "k_h": 0.020,
+            "alpha": 1.65,
+            "beta": 2.1,
+            "k_e": 2.5e-5,
+            "k_ex": 1.1e-4
+        },
+        "permalloy_78": {
+            "name": "Permalloy (78% Ni, 22% Fe)",
+            "description": "Very high permeability nickel-iron alloy for precision magnetic components.",
+            "b_sat": 0.75,
+            "coercivity_h": 1.6,
+            "remanence_b": 0.55,
+            "h_max": 15.0,
+            "core_volume_cm3": 50.0,
+            "k": 0.003,
+            "k_h": 0.002,
+            "alpha": 1.55,
+            "beta": 2.05,
+            "k_e": 5e-6,
+            "k_ex": 1.5e-5
+        },
+        "mnzn_ferrite": {
+            "name": "Soft MnZn Ferrite (High Freq)",
+            "description": "High-resistivity soft ferrite for high-frequency inductors and transformers.",
+            "b_sat": 0.40,
+            "coercivity_h": 12.0,
+            "remanence_b": 0.22,
+            "h_max": 100.0,
+            "core_volume_cm3": 10.0,
+            "k": 0.0012,
+            "k_h": 0.0008,
+            "alpha": 1.6,
+            "beta": 2.4,
+            "k_e": 2e-7,
+            "k_ex": 5e-6
+        },
+        "metglas_2605sa1": {
+            "name": "Metglas 2605SA1 (Amorphous)",
+            "description": "Amorphous ribbon with low coercivity and low magnetostriction.",
+            "b_sat": 1.56,
+            "coercivity_h": 4.0,
+            "remanence_b": 0.85,
+            "h_max": 80.0,
+            "core_volume_cm3": 400.0,
+            "k": 0.004,
+            "k_h": 0.003,
+            "alpha": 1.58,
+            "beta": 1.95,
+            "k_e": 4e-6,
+            "k_ex": 2e-5
+        },
+        "hyperco_50": {
+            "name": "Hyperco 50 (Cobalt-Iron)",
+            "description": "High-saturation cobalt-iron alloy for force-dense magnetic actuators.",
+            "b_sat": 2.40,
+            "coercivity_h": 110.0,
+            "remanence_b": 1.65,
+            "h_max": 2000.0,
+            "core_volume_cm3": 150.0,
+            "k": 0.032,
+            "k_h": 0.025,
+            "alpha": 1.66,
+            "beta": 2.05,
+            "k_e": 3e-5,
+            "k_ex": 1.3e-4
+        },
+        "supermalloy": {
+            "name": "Supermalloy Premium",
+            "description": "Ultra-high initial permeability nickel-iron alloy.",
+            "b_sat": 0.79,
+            "coercivity_h": 0.35,
+            "remanence_b": 0.40,
+            "h_max": 5.0,
+            "core_volume_cm3": 120.0,
+            "k": 0.0015,
+            "k_h": 0.001,
+            "alpha": 1.52,
+            "beta": 2.0,
+            "k_e": 3e-6,
+            "k_ex": 1e-5
+        },
+        "alnico_v": {
+            "name": "Alnico V (Hard Magnet)",
+            "description": "Permanent magnet alloy with high remanence and high coercivity.",
+            "b_sat": 1.25,
+            "coercivity_h": 50000.0,
             "remanence_b": 1.10,
+            "h_max": 150000.0,
+            "core_volume_cm3": 30.0,
             "k": 0.18,
+            "k_h": 0.15,
             "alpha": 1.5,
             "beta": 1.8,
-            "k_h": 0.15,
             "k_e": 8e-5,
             "k_ex": 3e-4
+        },
+        "ceramic_hard_ferrite": {
+            "name": "Ceramic Hard Ferrite",
+            "description": "Permanent ceramic magnet with high coercivity and low conductivity.",
+            "b_sat": 0.38,
+            "coercivity_h": 170000.0,
+            "remanence_b": 0.35,
+            "h_max": 400000.0,
+            "core_volume_cm3": 80.0,
+            "k": 0.095,
+            "k_h": 0.08,
+            "alpha": 1.45,
+            "beta": 1.75,
+            "k_e": 5e-7,
+            "k_ex": 2e-5
+        },
+        "ndfeb": {
+            "name": "Neodymium NdFeB (Hard Supermagnet)",
+            "description": "Rare-earth permanent magnet with very high coercivity.",
+            "b_sat": 1.28,
+            "coercivity_h": 840000.0,
+            "remanence_b": 1.20,
+            "h_max": 2000000.0,
+            "core_volume_cm3": 20.0,
+            "k": 0.24,
+            "k_h": 0.20,
+            "alpha": 1.45,
+            "beta": 1.7,
+            "k_e": 1.2e-4,
+            "k_ex": 4e-4
         }
     }
 
@@ -230,6 +345,7 @@ async def get_hysteresis_loop(req: HysteresisLoopRequest) -> dict:
         coercivity_h=req.coercivity_h,
         remanence_b=req.remanence_b,
         n_points=req.n_points,
+        frequency=req.frequency,
     )
     
     # Calculate Loop Area to get dynamic Hysteresis loss

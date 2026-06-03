@@ -278,7 +278,9 @@
       button.addEventListener("click", () => switchView(button.dataset.view));
     });
 
-    $("theme-toggle").addEventListener("click", toggleTheme);
+    document.querySelectorAll(".theme-toggle").forEach((btn) => {
+      btn.addEventListener("click", toggleTheme);
+    });
     $("material-select").addEventListener("change", (event) => applyPreset(event.target.value));
     $("reset-btn").addEventListener("click", () => applyPreset("silicon_steel_m4"));
     $("soft-scale-btn").addEventListener("click", () => setCoercivityScale(false));
@@ -345,12 +347,13 @@
   }
 
   function updateThemeIcon() {
-    const btn = $("theme-toggle");
-    const icon = btn.querySelector("[data-lucide]");
-    if (icon) {
-      icon.setAttribute("data-lucide", state.theme === "dark" ? "sun" : "moon");
-      refreshIcons();
-    }
+    document.querySelectorAll(".theme-toggle").forEach((btn) => {
+      const icon = btn.querySelector("[data-lucide]");
+      if (icon) {
+        icon.setAttribute("data-lucide", state.theme === "dark" ? "sun" : "moon");
+      }
+    });
+    refreshIcons();
   }
 
   function applyPreset(key) {
@@ -1497,5 +1500,22 @@ plt.show()
     return trimmed;
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  async function loadViewsAndInit() {
+    const views = document.querySelectorAll(".view[data-src]");
+    const promises = Array.from(views).map(async (view) => {
+      const src = view.getAttribute("data-src");
+      try {
+        const response = await fetch(src);
+        if (!response.ok) throw new Error(`Failed to load ${src}`);
+        view.innerHTML = await response.text();
+      } catch (err) {
+        console.error(err);
+        view.innerHTML = `<div class="error-panel" style="padding: 20px; color: var(--danger);">Error loading view content.</div>`;
+      }
+    });
+    await Promise.all(promises);
+    init();
+  }
+
+  document.addEventListener("DOMContentLoaded", loadViewsAndInit);
 })();

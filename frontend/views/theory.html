@@ -1,34 +1,85 @@
-<article class="panel theory-panel">
-  <div class="panel-header">
-    <div>
-      <h3>Theoretical Aspects of Hysteresis Losses</h3>
-      <p>Magnetic memory, loop area, material type, and AC loss mechanisms</p>
+<article class="panel telegraph-article">
+  <header class="telegraph-header">
+    <span class="telegraph-meta">MAG-HYST Labs • Physics Reference</span>
+    <h1>Theoretical Foundations & Definitions</h1>
+    <p class="telegraph-lead">A comprehensive reference guide to magnetic core behavior, parameters, and loss separation models.</p>
+    <div class="telegraph-divider"></div>
+  </header>
+
+  <div class="telegraph-body">
+    <h2>1. Core Magnetization Definitions</h2>
+    
+    <div class="definition-item">
+      <span class="def-term">Magnetic Flux Density (B)</span>
+      <p>Measured in <strong>Teslas (T)</strong>. It quantifies the strength and concentration of the magnetic field induced inside the material. One Tesla is equal to one Weber per square meter.</p>
     </div>
-  </div>
-  <div class="theory-grid">
-    <section>
-      <h4>1. What the B-H loop means</h4>
-      <p>H is the magnetizing field applied by the coil. B is the resulting flux density inside the core. A ferromagnetic material does not follow the same path while magnetizing and demagnetizing, so the closed B-H loop records magnetic memory.</p>
-    </section>
-    <section>
-      <h4>2. Energy loss from loop area</h4>
-      <p>The energy dissipated as heat per unit volume per cycle is the enclosed loop area. Numerically, this app integrates the closed curve and reports the absolute area in J/m3. Power rises with frequency: P_density = W_cycle x f.</p>
-    </section>
-    <section>
-      <h4>3. Remanence, coercivity, and saturation</h4>
-      <p>Remanence Br is the remaining B when H returns to zero. Coercivity Hc is the reverse field needed to drive B back to zero. Saturation Bs is the upper flux-density limit where most domains are already aligned.</p>
-    </section>
-    <section>
-      <h4>4. Material selection</h4>
-      <p>Soft magnetic materials such as silicon steel, ferrites, Metglas, and Permalloy have narrow loops and low Hc, which reduces heat in transformers and motors. Hard magnets such as Alnico, ceramic ferrite, and NdFeB have wide loops and high Hc, so they resist demagnetization.</p>
-    </section>
-    <section>
-      <h4>5. AC loss separation</h4>
-      <p>Total core loss is usually treated as hysteresis loss plus eddy-current loss plus excess loss. Eddy current loss grows strongly with frequency and conductive cores; ferrites reduce it by using high electrical resistivity.</p>
-    </section>
-    <section>
-      <h4>6. Domain arrows</h4>
-      <p>The domain panel visualizes many microscopic magnetic regions. With weak field they remain scattered; as H increases, more arrows rotate toward the applied field. Hysteresis occurs because those rotations and domain-wall motions lag behind the applied field.</p>
-    </section>
+
+    <div class="definition-item">
+      <span class="def-term">Magnetizing Field Strength (H)</span>
+      <p>Measured in <strong>Ampere-turns per meter (A/m)</strong>. It is the external magnetizing force applied to the material (usually by current passing through a wire winding around the core).</p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Saturation Flux Density (B<sub>sat</sub>)</span>
+      <p>The maximum limit of flux density that a core can hold. Beyond B<sub>sat</sub>, increasing the external field H yields no significant increase in magnetization, as all internal magnetic domains are already fully aligned.</p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Remanence (B<sub>r</sub>)</span>
+      <p>The remaining magnetic flux density left in the core when the external magnetizing field H is brought back to zero. It represents the "magnetic memory" or permanent magnetization of the material.</p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Coercivity (H<sub>c</sub>)</span>
+      <p>The reverse magnetic field strength required to completely demagnetize the material, bringing its flux density B back to zero. A material with low H<sub>c</sub> is "soft" (easy to magnetize/demagnetize), while high H<sub>c</sub> indicates a "hard" permanent magnet.</p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Peak Applied Field (H<sub>max</sub>)</span>
+      <p>The maximum amplitude of the magnetizing field strength applied during the alternating current (AC) cycle.</p>
+    </div>
+
+    <h2>2. Hysteresis Loop & Loss Mechanisms</h2>
+    
+    <div class="definition-item">
+      <span class="def-term">Hysteresis Loop Area</span>
+      <p>Ferromagnetic materials do not magnetize and demagnetize along the same path. This lag creates a closed B-H loop. The area enclosed by the loop represents the energy dissipated as heat per unit volume per cycle (measured in <strong>Joules per cubic meter, J/m³</strong>).</p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Total Core Loss Power</span>
+      <p>The rate of energy loss in the core. For an active volume V<sub>core</sub> (in cm³) and frequency f, the power loss is computed as:
+         <code class="formula">P<sub>loss</sub> = Loop Area × f × V<sub>core</sub> × 10⁻⁶</code>
+      </p>
+    </div>
+
+    <h2>3. AC Loss Separation (Bertotti Model)</h2>
+    <p>Core losses increase rapidly with frequency. Under the Bertotti model, the total power loss density is split into three physical components:</p>
+
+    <div class="definition-item">
+      <span class="def-term">Hysteresis Loss (P<sub>h</sub>)</span>
+      <p>Caused by microscopic friction during domain wall movements. It scales linearly with frequency: 
+         <code class="formula">P<sub>h</sub> = W<sub>cycle</sub> × f</code>
+      </p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Eddy Current Loss (P<sub>e</sub>)</span>
+      <p>Caused by circulating electrical currents induced inside conductive core materials by the alternating magnetic field. It scales quadratically with frequency:
+         <code class="formula">P<sub>e</sub> = k<sub>e</sub> × f² × B<sub>peak</sub>²</code>
+      </p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Excess Loss (P<sub>ex</sub>)</span>
+      <p>Arises from the dynamic, non-uniform motion of magnetic domains under high frequencies. It scales by the 1.5 power of frequency:
+         <code class="formula">P<sub>ex</sub> = k<sub>ex</sub> × f<sup>1.5</sup> × B<sub>peak</sub><sup>1.5</sup></code>
+      </p>
+    </div>
+
+    <h2>4. Empirical Steinmetz Fit</h2>
+    <p>The Steinmetz equation is an empirical model used by electrical engineers to quickly estimate core loss density based on test data:</p>
+    <code class="formula block">P<sub>loss</sub> = k × f<sup>α</sup> × B<sub>peak</sub><sup>β</sup></code>
+    <p>Where k is the Steinmetz coefficient, α is the frequency exponent, and β is the flux density exponent. The <strong>Steinmetz ML Fit</strong> tab runs a regression analysis over custom test data points to compute these exponents for any core material.</p>
   </div>
 </article>

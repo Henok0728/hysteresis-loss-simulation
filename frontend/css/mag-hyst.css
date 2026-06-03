@@ -577,6 +577,12 @@ canvas {
   font-weight: 900;
 }
 
+.pending-text {
+  font-size: clamp(14px, 3.5vw, 22px);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .metric-tile small {
   color: var(--text-secondary);
   font-size: clamp(10px, 2vw, 12px);
@@ -940,38 +946,111 @@ tr:hover td {
   margin-top: 6px;
 }
 
-.theory-panel {
-  max-width: 100%;
+/* ── Telegraph Theme Article (Theory View) ─────────────────────────────────── */
+.telegraph-article {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 44px clamp(16px, 5vw, 54px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  box-shadow: 0 20px 50px var(--shadow);
+  border-radius: 8px;
 }
 
-.theory-grid {
-  padding: 18px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
+.telegraph-header {
+  text-align: center;
+  margin-bottom: 36px;
 }
 
-.theory-grid section {
-  border-left: 2px solid var(--accent-cyan);
-  padding: 14px 16px;
-  background: var(--bg-card);
-  border-radius: 4px;
-}
-
-.theory-grid h4 {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: clamp(11px, 2.5vw, 12px);
-  font-weight: 800;
-  letter-spacing: 0.12em;
+.telegraph-meta {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-cyan-text);
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
-.theory-grid p {
-  margin: 8px 0 0;
-  color: var(--text-secondary);
-  font-size: clamp(12px, 2vw, 13px);
+.telegraph-header h1 {
+  font-family: "Inter", sans-serif;
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 16px 0 12px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.telegraph-lead {
+  font-size: clamp(14px, 2vw, 16px);
   line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.telegraph-divider {
+  width: 80px;
+  height: 2px;
+  background: var(--border-primary);
+  margin: 32px auto 0;
+}
+
+.telegraph-body h2 {
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 40px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-secondary);
+  padding-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.definition-item {
+  margin-bottom: 24px;
+  padding-left: 16px;
+  border-left: 3px solid var(--border-primary);
+  transition: border-color 200ms ease;
+}
+
+.definition-item:hover {
+  border-left-color: var(--accent-cyan);
+}
+
+.def-term {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.definition-item p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.formula {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  background: var(--bg-inset);
+  color: var(--accent-cyan-text);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-secondary);
+}
+
+.formula.block {
+  display: block;
+  width: fit-content;
+  margin: 16px auto;
+  padding: 10px 20px;
+  font-size: 14px;
+  text-align: center;
 }
 
 .code-panel {

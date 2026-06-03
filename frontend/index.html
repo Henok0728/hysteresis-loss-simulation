@@ -49,58 +49,40 @@
       </div>
 
       <nav class="side-nav" aria-label="Workspace navigation">
+         <button class="nav-button" data-view="theory" type="button">
+          <i data-lucide="book-open-text"></i>
+          <span>
+            <strong>Theory Panel</strong>
+          </span>
+        </button>
         <button class="nav-button active" data-view="simulator" type="button">
           <i data-lucide="sliders-horizontal"></i>
           <span>
             <strong>B-H Loop Simulator</strong>
-            <small>Curve, domains, AC cycle</small>
           </span>
         </button>
+       
         <button class="nav-button" data-view="data" type="button">
           <i data-lucide="database"></i>
           <span>
             <strong>Data Import</strong>
-            <small>CSV overlay and snapshots</small>
           </span>
-          <em id="dataset-badge">0 RUNS</em>
         </button>
         <button class="nav-button" data-view="ml" type="button">
           <i data-lucide="brain-circuit"></i>
           <span>
             <strong>Steinmetz ML Fit</strong>
-            <small>Loss exponent regression</small>
           </span>
         </button>
-        <button class="nav-button" data-view="theory" type="button">
-          <i data-lucide="book-open-text"></i>
-          <span>
-            <strong>Theory Panel</strong>
-            <small>Loss physics reference</small>
-          </span>
-        </button>
+        
         <button class="nav-button" data-view="script" type="button">
           <i data-lucide="terminal-square"></i>
           <span>
             <strong>Python Bridge</strong>
-            <small>Reproducible model export</small>
           </span>
         </button>
       </nav>
 
-      <div class="sidebar-footer">
-        <div>
-          <span>Microservice</span>
-          <strong id="api-status-sidebar">CHECKING</strong>
-        </div>
-        <div>
-          <span>Active material</span>
-          <strong id="sidebar-material">Electrical Silicon Steel (M4)</strong>
-        </div>
-        <div>
-          <span>Total loss</span>
-          <strong id="sidebar-loss">0.0000 W</strong>
-        </div>
-      </div>
     </aside>
 
     <section class="workspace">
@@ -109,16 +91,6 @@
           <span class="eyebrow">Workspace View</span>
           <h2 id="view-title">Simulation & Parameter Config</h2>
           <p id="view-subtitle">Friend-style B-H loop model with AC playback and domain vectors.</p>
-        </div>
-        <div class="header-readout">
-          <div>
-            <span>Preset</span>
-            <strong id="header-material">Electrical Silicon Steel (M4)</strong>
-          </div>
-          <div>
-            <span>Loop Area</span>
-            <strong id="header-area">0.0 J/m3</strong>
-          </div>
         </div>
       </header>
 

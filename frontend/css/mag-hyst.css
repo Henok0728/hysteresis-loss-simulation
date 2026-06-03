@@ -54,7 +54,7 @@
   --bg-inset: #fafbfc;
   
   /* Borders */
-  --border-primary: #d0d7de;
+  --border-primary: #9ca2a8;
   --border-secondary: #e1e4e8;
   
   /* Font / Text Colors (Modern Light Mode) */
@@ -647,8 +647,8 @@ canvas {
 }
 
 .field-control {
-  width: 100%;
-  min-height: 40px;
+  width: 90%;
+  min-height: 30px;
   padding: 10px 12px;
   border: 1px solid var(--border-primary);
   outline: none;

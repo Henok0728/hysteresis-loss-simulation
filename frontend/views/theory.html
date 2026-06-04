@@ -2,12 +2,29 @@
   <header class="telegraph-header">
     <span class="telegraph-meta">MAG-HYSTERSIS SIMULATION • Our Group Simulation project</span>
     <h1>Theoretical Foundations & Definitions</h1>
-    <p class="telegraph-lead">A comprehensive reference guide to magnetic core behavior, parameters, and loss separation models.</p>
+    <p class="telegraph-lead">A comprehensive reference guide to magnetic core behavior, parameters, and loss separation models built from the ground up.</p>
     <div class="telegraph-divider"></div>
   </header>
 
   <div class="telegraph-body">
-    <h2>1. Core Magnetization Definitions</h2>
+    <h2>1. Ground-Up Microscopic Foundations</h2>
+    
+    <div class="definition-item">
+      <span class="def-term">Magnetic Dipoles</span>
+      <p>Microscopic atomic-level magnetic fields created by electron spins. In ferromagnetic materials, quantum forces cause adjacent dipoles to snap into parallel alignment.</p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Magnetic Domains</span>
+      <p>Microscopic clustered regions where all internal dipoles point the same way. In an unmagnetized core, these domains point in random directions, canceling each other out.</p>
+    </div>
+
+    <div class="definition-item">
+      <span class="def-term">Bloch Walls</span>
+      <p>The narrow transition boundary zones that separate adjacent magnetic domains pointing in different directions.</p>
+    </div>
+
+    <h2>2. Core Magnetization Definitions</h2>
     
     <div class="definition-item">
       <span class="def-term">Magnetic Flux Density (B)</span>
@@ -16,7 +33,8 @@
 
     <div class="definition-item">
       <span class="def-term">Magnetizing Field Strength (H)</span>
-      <p>Measured in <strong>Ampere-turns per meter (A/m)</strong>. It is the external magnetizing force applied to the material (usually by current passing through a wire winding around the core).</p>
+      <p>Measured in <strong>Ampere-turns per meter (A/m)</strong>. It is the external magnetizing force applied to the material, usually driven by current passing through a wire winding around the core:</p>
+      <code class="formula">H = (N * I) / l</code>
     </div>
 
     <div class="definition-item">
@@ -39,7 +57,8 @@
       <p>The maximum amplitude of the magnetizing field strength applied during the alternating current (AC) cycle.</p>
     </div>
 
-    <h2>2. Hysteresis Loop & Loss Mechanisms</h2>
+    <h2>3. Hysteresis Loop & Loss Mechanisms</h2>
+    <p>Because moving domain walls pin irreversibly against physical material defects, the magnetization path demagnetizes along a separate lag path rather than a straight line.</p>
     
     <div class="definition-item">
       <span class="def-term">Hysteresis Loop Area</span>
@@ -53,7 +72,7 @@
       </p>
     </div>
 
-    <h2>3. AC Loss Separation (Bertotti Model)</h2>
+    <h2>4. AC Loss Separation (Bertotti Model)</h2>
     <p>Core losses increase rapidly with frequency. Under the Bertotti model, the total power loss density is split into three physical components:</p>
 
     <div class="definition-item">
@@ -77,7 +96,7 @@
       </p>
     </div>
 
-    <h2>4. Empirical Steinmetz Fit</h2>
+    <h2>5. Empirical Steinmetz Fit</h2>
     <p>The Steinmetz equation is an empirical model used by electrical engineers to quickly estimate core loss density based on test data.</p>
     <code class="formula block">P<sub>loss</sub> = k × f<sup>α</sup> × B<sub>peak</sub><sup>β</sup></code>
     <p>Where k is the Steinmetz coefficient, α is the frequency exponent, and β is the flux density exponent. The <strong>Steinmetz ML Fit</strong> tab runs a regression analysis over custom test data points to compute these exponents for any core material.</p>

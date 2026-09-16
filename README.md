@@ -1,6 +1,6 @@
 # MagSim Pro — Hysteresis Loss Simulator
 <div align="center">
-  <img src="assets/demo.mp4" width="560"/>
+  <img src="assets/demo.gif" width="560"/>
 </div>
 <br/>
 <br/>
